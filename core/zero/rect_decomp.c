@@ -1,21 +1,18 @@
 #include <gkyl_alloc.h>
 #include <gkyl_array.h>
 #include <gkyl_array_ops.h>
+#include <gkyl_fvec.h>
 #include <gkyl_rect_decomp.h>
 #include <gkyl_util.h>
 
 #include <string.h>
 
-// define container to store vector of ints
-#define i_val int
-#include <stc/cvec.h>
-
 // Private struct to manage the neighbor data struct
 struct rect_decomp_neigh_cont {
   struct gkyl_rect_decomp_neigh neigh;
-  cvec_int l_neigh;
-  cvec_int l_dir;
-  cvec_int l_edge;
+  int* l_neigh;
+  int* l_dir;
+  int* l_edge;
 };
 
 static void
@@ -188,9 +185,9 @@ static struct gkyl_rect_decomp_neigh*
 calc_neigh_with_corners(const struct gkyl_rect_decomp *decomp, int nidx)
 {
   struct rect_decomp_neigh_cont *cont = gkyl_malloc(sizeof(*cont));
-  cont->l_neigh = cvec_int_init();
-  cont->l_dir = cvec_int_init();
-  cont->l_edge = cvec_int_init();
+  cont->l_neigh = 0;
+  cont->l_dir = 0;
+  cont->l_edge = 0;
   
   int elo[GKYL_MAX_DIM], eup[GKYL_MAX_DIM];
   for (int i=0; i<decomp->ndim; ++i)
@@ -205,20 +202,20 @@ calc_neigh_with_corners(const struct gkyl_rect_decomp *decomp, int nidx)
       int is_inter = gkyl_range_intersect(&irng, &erng,
         &decomp->ranges[i]);
       if (is_inter) {
-        cvec_int_push_back(&cont->l_neigh, i);
+        gkyl_fvec_push(cont->l_neigh, i);
         
         struct gkyl_range_dir_edge dir_ed =
           gkyl_range_edge_match(&decomp->ranges[nidx], &decomp->ranges[i]);
 
-        cvec_int_push_back(&cont->l_dir, dir_ed.dir);
-        cvec_int_push_back(&cont->l_edge, dir_ed.eloc);
+        gkyl_fvec_push(cont->l_dir, dir_ed.dir);
+        gkyl_fvec_push(cont->l_edge, dir_ed.eloc);
       }
     }
 
-  cont->neigh.num_neigh = cvec_int_size(cont->l_neigh);
-  cont->neigh.neigh = cvec_int_front(&cont->l_neigh);
-  cont->neigh.dir = cvec_int_front(&cont->l_dir);
-  cont->neigh.edge = cvec_int_front(&cont->l_edge);
+  cont->neigh.num_neigh = gkyl_fvec_size(cont->l_neigh);
+  cont->neigh.neigh = &cont->l_neigh[0];
+  cont->neigh.dir = &cont->l_dir[0];
+  cont->neigh.edge = &cont->l_edge[0];
   
   return &cont->neigh;
 }
@@ -229,9 +226,9 @@ static struct gkyl_rect_decomp_neigh*
 calc_neigh_no_corners(const struct gkyl_rect_decomp *decomp, int nidx)
 {
   struct rect_decomp_neigh_cont *cont = gkyl_malloc(sizeof(*cont));
-  cont->l_neigh = cvec_int_init();
-  cont->l_dir = cvec_int_init();
-  cont->l_edge = cvec_int_init();  
+  cont->l_neigh = 0;
+  cont->l_dir = 0;
+  cont->l_edge = 0;  
   
   struct gkyl_range erng;
 
@@ -247,21 +244,21 @@ calc_neigh_no_corners(const struct gkyl_rect_decomp *decomp, int nidx)
         int is_inter = gkyl_range_intersect(&irng, &erng,
           &decomp->ranges[i]);
         if (is_inter) {
-          cvec_int_push_back(&cont->l_neigh, i);
+          gkyl_fvec_push(cont->l_neigh, i);
 
           struct gkyl_range_dir_edge dir_ed =
             gkyl_range_edge_match(&decomp->ranges[nidx], &decomp->ranges[i]);
           
-          cvec_int_push_back(&cont->l_dir, dir_ed.dir);
-          cvec_int_push_back(&cont->l_edge, dir_ed.eloc);
+          gkyl_fvec_push(cont->l_dir, dir_ed.dir);
+          gkyl_fvec_push(cont->l_edge, dir_ed.eloc);
         }
       }
   }
   
-  cont->neigh.num_neigh = cvec_int_size(cont->l_neigh);
-  cont->neigh.neigh = cvec_int_front(&cont->l_neigh);
-  cont->neigh.dir = cvec_int_front(&cont->l_dir);
-  cont->neigh.edge = cvec_int_front(&cont->l_edge);  
+  cont->neigh.num_neigh = gkyl_fvec_size(cont->l_neigh);
+  cont->neigh.neigh = &cont->l_neigh[0];
+  cont->neigh.dir = &cont->l_dir[0];
+  cont->neigh.edge = &cont->l_edge[0];
   
   return &cont->neigh;
 }
@@ -280,9 +277,9 @@ gkyl_rect_decomp_calc_periodic_neigh(const struct gkyl_rect_decomp *decomp,
   int dir, bool inc_corners, int nidx)
 {
   struct rect_decomp_neigh_cont *cont = gkyl_malloc(sizeof(*cont));
-  cont->l_neigh = cvec_int_init();
-  cont->l_dir = cvec_int_init();
-  cont->l_edge = cvec_int_init();  
+  cont->l_neigh = 0;
+  cont->l_dir = 0;
+  cont->l_edge = 0;  
 
   const struct gkyl_range *curr = &decomp->ranges[nidx];
 
@@ -309,11 +306,11 @@ gkyl_rect_decomp_calc_periodic_neigh(const struct gkyl_rect_decomp *decomp,
         int is_inter = gkyl_range_intersect(&irng, &shift_erng,
           &decomp->ranges[i]);
         if (is_inter) {
-          cvec_int_push_back(&cont->l_neigh, i);
-          cvec_int_push_back(&cont->l_dir, dir);
+          gkyl_fvec_push(cont->l_neigh, i);
+          gkyl_fvec_push(cont->l_dir, dir);
           // this is not exactly correct: corner neighbors should not
           // be on any edge
-          cvec_int_push_back(&cont->l_edge, GKYL_LOWER_EDGE);
+          gkyl_fvec_push(cont->l_edge, GKYL_LOWER_EDGE);
         }
       }
   }
@@ -333,19 +330,19 @@ gkyl_rect_decomp_calc_periodic_neigh(const struct gkyl_rect_decomp *decomp,
         int is_inter = gkyl_range_intersect(&irng, &shift_erng,
           &decomp->ranges[i]);
         if (is_inter) {
-          cvec_int_push_back(&cont->l_neigh, i);
-          cvec_int_push_back(&cont->l_dir, dir);
+          gkyl_fvec_push(cont->l_neigh, i);
+          gkyl_fvec_push(cont->l_dir, dir);
           // this is not exactly correct: corner neighbors should not
           // be on any edge          
-          cvec_int_push_back(&cont->l_edge, GKYL_UPPER_EDGE);
+          gkyl_fvec_push(cont->l_edge, GKYL_UPPER_EDGE);
         }
       }
   }
 
-  cont->neigh.num_neigh = cvec_int_size(cont->l_neigh);  
-  cont->neigh.neigh = cvec_int_front(&cont->l_neigh);
-  cont->neigh.dir = cvec_int_front(&cont->l_dir);
-  cont->neigh.edge = cvec_int_front(&cont->l_edge);  
+  cont->neigh.num_neigh = gkyl_fvec_size(cont->l_neigh);  
+  cont->neigh.neigh = &cont->l_neigh[0];
+  cont->neigh.dir = &cont->l_dir[0];
+  cont->neigh.edge = &cont->l_edge[0];
   
   return &cont->neigh;
 }
@@ -355,9 +352,9 @@ gkyl_rect_decomp_neigh_release(struct gkyl_rect_decomp_neigh *ng)
 {
   struct rect_decomp_neigh_cont *cont = container_of(ng,
     struct rect_decomp_neigh_cont, neigh);
-  cvec_int_drop(&cont->l_neigh);
-  cvec_int_drop(&cont->l_dir);
-  cvec_int_drop(&cont->l_edge);
+  gkyl_fvec_free(cont->l_neigh);
+  gkyl_fvec_free(cont->l_dir);
+  gkyl_fvec_free(cont->l_edge);
   gkyl_free(cont);
 }
 

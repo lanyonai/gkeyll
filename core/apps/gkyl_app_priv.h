@@ -52,7 +52,7 @@ array_combine(struct gkyl_array *out, double c1, const struct gkyl_array *arr1,
 
 // Create ghost and skin sub-ranges given a parent range
 static void
-app_skin_ghost_ranges_init(struct app_skin_ghost_ranges *sgr,
+skin_ghost_ranges_init(struct app_skin_ghost_ranges *sgr,
   const struct gkyl_range *parent, const int *ghost)
 {
   int ndim = parent->ndim;
