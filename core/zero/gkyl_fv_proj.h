@@ -1,9 +1,12 @@
 #pragma once
 
-#include <gkyl_proj_on_basis.h>
+#include <gkyl_array.h>
+#include <gkyl_evalf_def.h>
+#include <gkyl_range.h>
+#include <gkyl_rect_decomp.h>
 
 // Object type
-typedef struct gkyl_proj_on_basis gkyl_fv_proj;
+typedef struct gkyl_fv_proj gkyl_fv_proj;
 
 /**
  * Create new updater to compute cell-average of function on a
