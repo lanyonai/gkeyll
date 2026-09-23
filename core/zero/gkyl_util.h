@@ -478,7 +478,7 @@ enum gkyl_msgpack_elem_type {
 
 // Entry type into msgpack map.
 struct gkyl_msgpack_map_elem {
-  const char *key; // name of element
+  char *key; // name of element
   enum gkyl_msgpack_elem_type elem_type; // type of element
   union {
     // depending on elem_type one of following should be set    
@@ -487,14 +487,14 @@ struct gkyl_msgpack_map_elem {
     int ival;
     float fval;
     double dval;
-    const char *cval; // null terminated string managed by caller
+    char *cval; // null terminated string managed by caller
   };
 };
 
 // The following functions and the macro reduce the errors in
 // constructing gkyl_msgpack_map_elem objects
 static inline struct gkyl_msgpack_map_elem
-gmpe_bval(const char *key, bool val)
+gmpe_bval(char *key, bool val)
 {
   return (struct gkyl_msgpack_map_elem) {
     .key = key,
@@ -503,7 +503,7 @@ gmpe_bval(const char *key, bool val)
   };
 }
 static inline struct gkyl_msgpack_map_elem
-gmpe_uval(const char *key, unsigned int val)
+gmpe_uval(char *key, unsigned int val)
 {
   return (struct gkyl_msgpack_map_elem) {
     .key = key,
@@ -512,7 +512,7 @@ gmpe_uval(const char *key, unsigned int val)
   };
 }
 static inline struct gkyl_msgpack_map_elem
-gmpe_ival(const char *key, int val)
+gmpe_ival(char *key, int val)
 {
   return (struct gkyl_msgpack_map_elem) {
     .key = key,
@@ -521,7 +521,7 @@ gmpe_ival(const char *key, int val)
   };
 }
 static inline struct gkyl_msgpack_map_elem
-gmpe_fval(const char *key, float val)
+gmpe_fval(char *key, float val)
 {
   return (struct gkyl_msgpack_map_elem) {
     .key = key,
@@ -530,7 +530,7 @@ gmpe_fval(const char *key, float val)
   };
 }
 static inline struct gkyl_msgpack_map_elem
-gmpe_dval(const char *key, double val)
+gmpe_dval(char *key, double val)
 {
   return (struct gkyl_msgpack_map_elem) {
     .key = key,
@@ -539,7 +539,7 @@ gmpe_dval(const char *key, double val)
   };
 }
 static inline struct gkyl_msgpack_map_elem
-gmpe_cval(const char *key, char *val)
+gmpe_cval(char *key, char *val)
 {
   return (struct gkyl_msgpack_map_elem) {
     .key = key,
