@@ -26,8 +26,6 @@
 #include <gkyl_wv_maxwell.h>
 #include <rt_arg_parse.h>
 
-#include <thpool.h>
-
 // Gas constant
 static const double gas_gamma = 1.4;
 

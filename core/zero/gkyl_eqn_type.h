@@ -152,13 +152,6 @@ enum gkyl_geometry_id {
   GKYL_GEOMETRY_FROMFILE, // Geometry from file.
 };
 
-// type of quadrature to use
-enum gkyl_quad_type {
-  GKYL_GAUSS_QUAD = 0, // Gauss-Legendre quadrature
-  GKYL_GAUSS_LOBATTO_QUAD, // Gauss-Lobatto quadrature
-  GKYL_POSITIVITY_QUAD // Positivity quadrature nodes
-};
-
 /** Flags for indicating acting edge of velocity space */
 enum gkyl_vel_edge { 
   GKYL_VX_LOWER, GKYL_VY_LOWER, GKYL_VZ_LOWER, 
