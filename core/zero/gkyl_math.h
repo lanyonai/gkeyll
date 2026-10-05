@@ -1,9 +1,15 @@
 #pragma once
 
 #include <math.h>
+#include <gkyl_util.h>
 
 // Three-component vector
-struct  gkyl_vec3 { double x[3]; };
+struct gkyl_vec3 {
+  double x[3];
+};
+
+// position vector of origin
+const static struct gkyl_vec3 v3_origin = { .x = { 0.0, 0.0, 0.0 } };
 
 // new vector with zeros 
 static inline struct gkyl_vec3
@@ -17,6 +23,13 @@ static inline struct gkyl_vec3
 gkyl_vec3_new(double x, double y, double z)
 {
   return (struct gkyl_vec3) { .x = { x, y, z} };
+}
+
+// Vector from components specied as double[3]
+static inline struct gkyl_vec3
+gkyl_vec3_new_from_dv(double v[3])
+{
+  return gkyl_vec3_new(v[0], v[1], v[2]);
 }
 
 // scalar*a
@@ -138,6 +151,116 @@ gkyl_vec3_polar_con_to_cov(double r, struct gkyl_vec3 pin)
   return gkyl_vec3_new(c0, c1, c2);
 }
 
+/**
+ * Return a vector whose components are maximum of the corresponding
+ * components of the vectors @a a and @a b.
+ *
+ * @param a First input vector
+ * @param b Second input vector
+ * @return vector with components max of the corresponding components of the vectors @a a and @a b
+ */
+static inline struct gkyl_vec3
+gkyl_vec3_max(struct gkyl_vec3 a, struct gkyl_vec3 b)
+{
+  return (struct gkyl_vec3) {
+    .x[0] = fmax(a.x[0], b.x[0]),
+    .x[1] = fmax(a.x[1], b.x[1]),
+    .x[2] = fmax(a.x[2], b.x[2])
+  };
+}
+
+/**
+ * Return a vector whose components are minmum of the corresponding
+ * components of the vectors @a a and @a b.
+ *
+ * @param a First input vector
+ * @param b Second input vector
+ * @return vector with components min of the corresponding components of the vectors @a a and @a b
+ */
+static inline struct gkyl_vec3
+gkyl_vec3_min(struct gkyl_vec3 a, struct gkyl_vec3 b)
+{
+  return (struct gkyl_vec3) {
+    .x[0] = fmin(a.x[0], b.x[0]),
+    .x[1] = fmin(a.x[1], b.x[1]),
+    .x[2] = fmin(a.x[2], b.x[2])
+  };
+}
+
+/**
+ * Return a vector whose components are the absolute value of the corresponding
+ * components of the vectors @a a.
+ *
+ * @param a Input vector
+ * @return vector with components abs of the corresponding components of the vector @a
+ */
+static inline struct gkyl_vec3
+gkyl_vec3_abs(struct gkyl_vec3 a)
+{
+  return (struct gkyl_vec3) {
+    .x[0] = fabs(a.x[0]),
+    .x[1] = fabs(a.x[1]),
+    .x[2] = fabs(a.x[2]) 
+  };
+}
+
+// Add @a s to every component of input @a a: a[k] + s
+static inline struct gkyl_vec3
+gkyl_vec3_sadd(struct gkyl_vec3 a, double s)
+{
+  return (struct gkyl_vec3) { .x = { a.x[0]+s, a.x[1]+s, a.x[2]+s } };
+}
+
+// Subtract @a s from every component of input @a a: a[k] - s
+static inline struct gkyl_vec3
+gkyl_vec3_ssub(struct gkyl_vec3 a, double s)
+{
+  return (struct gkyl_vec3) { .x = { a.x[0]-s, a.x[1]-s, a.x[2]-s } };
+}
+
+// Maximum absolute value of the components of @a a
+static inline double
+gkyl_vec3_vmax(struct gkyl_vec3 a)
+{
+  return fmax(a.x[0], fmax(a.x[1], a.x[2]));
+}
+
+// Returns vector with component a floor of the components of @a a vector.
+static inline struct gkyl_vec3
+gkyl_vec3_floor(struct gkyl_vec3 a)
+{
+  return (struct gkyl_vec3) { .x = { floor(a.x[0]), floor(a.x[1]), floor(a.x[2]) } };
+}
+
+// Returns vector with component containing the sign of the components of @a a vector.
+static inline struct gkyl_vec3
+gkyl_vec3_sgn(struct gkyl_vec3 a)
+{
+  return (struct gkyl_vec3) { .x = { GKYL_SGN(a.x[0]), GKYL_SGN(a.x[1]), GKYL_SGN(a.x[2]) } };
+}
+
+//  The gmod function computes x - y*floor(x/y). Unlike fmod, which
+//  truncates toward zero.
+static inline double
+gkyl_gmod(double x, double y)
+{
+  return x - y*floor(x/y);
+}
+
+// Returns a vector with each component a gkyl_gmod of the
+// corresponding component of @a a and @a b vectors.
+static inline struct gkyl_vec3
+gkyl_vec3_mod(struct gkyl_vec3 a, struct gkyl_vec3 b)
+{
+  return (struct gkyl_vec3) {
+    .x = {
+      gkyl_gmod(a.x[0], b.x[0]),
+      gkyl_gmod(a.x[1], b.x[1]),
+      gkyl_gmod(a.x[2], b.x[2])
+    }
+  };
+}
+
 // minmod(a,b,c, ...) returns min of all parameters are positive, max
 // of all parameters if all are negative, and zero otherwise.
 
@@ -194,6 +317,21 @@ static inline double
 gkyl_max_3(double x, double y, double z)
 {
   return fmax(x,fmax(y,z));
+}
+
+// return @a value if min < value < max. Otherwise return @a min if
+// value < min or max otherwise.
+static inline double
+gkyl_clamp(double value, double min, double max)
+{
+  return fmax(min, fmin(value, max));
+}
+
+// Clamp x beteen 0 and 1
+static inline double
+gkyl_saturate(double x)
+{
+  return gkyl_clamp(x, 0.0, 1.0);
 }
 
 // Result from numerical quadrature
