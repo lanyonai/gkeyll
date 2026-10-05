@@ -9,7 +9,7 @@ struct gkyl_vec3 {
 };
 
 // position vector of origin
-const static struct gkyl_vec3 v3_origin = { .x = { 0.0, 0.0, 0.0 } };
+static const struct gkyl_vec3 v3_origin = { .x = { 0.0, 0.0, 0.0 } };
 
 // new vector with zeros 
 static inline struct gkyl_vec3
