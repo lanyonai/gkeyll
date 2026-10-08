@@ -3,12 +3,13 @@
 #include <gkyl_app.h>
 #include <gkyl_basis.h>
 #include <gkyl_eqn_type.h>
+#include <gkyl_fem_poisson_bctype.h>
+#include <gkyl_mom_type.h>
+#include <gkyl_quad_type.h>
 #include <gkyl_range.h>
 #include <gkyl_util.h>
-#include <gkyl_wv_eqn.h>
-#include <gkyl_fem_poisson_bctype.h>
 #include <gkyl_vlasov_comms.h>
-#include <gkyl_mom_type.h>
+#include <gkyl_wv_eqn.h>
 
 #include <stdbool.h>
 

@@ -1,5 +1,6 @@
 #include <string.h>
 #include <math.h>
+#include <assert.h>
 
 #include <gkyl_alloc.h>
 #include <gkyl_array.h>
@@ -7,10 +8,10 @@
 #include <gkyl_const.h>
 #include <gkyl_gauss_quad_data.h>
 #include <gkyl_mat.h>
+#include <gkyl_quad_type.h>
+#include <gkyl_range.h>
 #include <gkyl_vlasov_lte_proj_on_basis.h>
 #include <gkyl_vlasov_lte_proj_on_basis_priv.h>
-#include <gkyl_range.h>
-#include <assert.h>
 
 // create range to loop over quadrature points.
 static inline struct gkyl_range

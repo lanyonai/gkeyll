@@ -1,9 +1,10 @@
 #pragma once
 
-// Private header for mpi_comm. Do not include in user-facing header files.
+// Private header for null_comm. Do not include in user-facing header files.
 
-#include <gkyl_null_comm.h>
 #include <gkyl_alloc.h>
+#include <gkyl_comm_priv.h>
+#include <gkyl_null_comm.h>
 
 // ranges for use in BCs
 struct skin_ghost_ranges {
@@ -16,12 +17,8 @@ struct skin_ghost_ranges {
   long max_vol; // maximum vol of send/recv region
 };
 
-// define long -> skin_ghost_ranges ...
-#define i_key long
-#define i_val struct skin_ghost_ranges
-#define i_tag l2sgr
-#include <stc/cmap.h>
-// ... done with map definition
+// define map type for mapping long -> skin_ghost_ranges
+typedef struct sgr_map sgr_map;
 
 // Private struct
 struct null_comm {
@@ -33,8 +30,8 @@ struct null_comm {
   
   struct gkyl_range grange; // range to "hash" ghost layout
 
-  cmap_l2sgr l2sgr; // map from long -> skin_ghost_ranges
-  cmap_l2sgr l2sgr_wc; // map from long -> skin_ghost_ranges with corners
+  sgr_map *l2sgr; // map from long -> skin_ghost_ranges
+  sgr_map *l2sgr_wc; // map from long -> skin_ghost_ranges with corners
   
   gkyl_mem_buff pbuff; // CUDA buffer for periodic BCs
 };
