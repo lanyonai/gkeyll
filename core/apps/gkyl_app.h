@@ -73,3 +73,14 @@ enum gkyl_ic_import_type {
   GKYL_IC_IMPORT_F, // Import f only.
   GKYL_IC_IMPORT_AF, // Import f and scale by alpha(x).
 };
+
+/**
+ * Write output to console: this is for diagnostic messages the driver
+ * code wants to write to console. It accounts for parallel output by
+ * not messing up the console with messages from each rank.
+ *
+ * @param fp File pointer for open file for output
+ * @param fmt Format string for console output
+ * @param argp Objects to write
+ */
+void gkyl_app_cout(FILE *fp, const char *fmt, ...);
