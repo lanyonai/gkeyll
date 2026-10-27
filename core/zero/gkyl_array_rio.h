@@ -45,7 +45,7 @@ struct gkyl_array_header_info {
  *
  * @param grid Grid object to read
  * @param hrd On output, Header data.
- * @param fname Name of output file (include .gkyl extension)
+ * @param fname Name of output file
  * @return Status flag
  */
 enum gkyl_array_rio_status gkyl_grid_sub_array_header_read(struct gkyl_rect_grid *grid,
@@ -60,14 +60,14 @@ enum gkyl_array_rio_status gkyl_grid_sub_array_header_read(struct gkyl_rect_grid
 void gkyl_array_header_info_release(struct gkyl_array_header_info *info);
 
 /**
- * Write out grid and array data to file in .gkyl format so postgkyl
- * can understand it.
+ * Write out grid and array data to file so postgkyl can understand
+ * it.
  *
  * @param grid Grid object to write
  * @param range Range describing portion of the array to output.
  * @param meta Meta-data to write. Set to NULL or 0 if no metadata
  * @param arr Array object to write
- * @param fname Name of output file (include .gkyl extension)
+ * @param fname Name of output file
  * @return Status flag
  */
 enum gkyl_array_rio_status gkyl_grid_sub_array_write(const struct gkyl_rect_grid *grid,

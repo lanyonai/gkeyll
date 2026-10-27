@@ -163,9 +163,7 @@ static inline struct gkyl_vec3
 gkyl_vec3_max(struct gkyl_vec3 a, struct gkyl_vec3 b)
 {
   return (struct gkyl_vec3) {
-    .x[0] = fmax(a.x[0], b.x[0]),
-    .x[1] = fmax(a.x[1], b.x[1]),
-    .x[2] = fmax(a.x[2], b.x[2])
+    .x = { fmax(a.x[0], b.x[0]), fmax(a.x[1], b.x[1]), fmax(a.x[2], b.x[2]) }
   };
 }
 
@@ -181,9 +179,7 @@ static inline struct gkyl_vec3
 gkyl_vec3_min(struct gkyl_vec3 a, struct gkyl_vec3 b)
 {
   return (struct gkyl_vec3) {
-    .x[0] = fmin(a.x[0], b.x[0]),
-    .x[1] = fmin(a.x[1], b.x[1]),
-    .x[2] = fmin(a.x[2], b.x[2])
+    .x = { fmin(a.x[0], b.x[0]), fmin(a.x[1], b.x[1]), fmin(a.x[2], b.x[2]) } 
   };
 }
 
@@ -198,9 +194,7 @@ static inline struct gkyl_vec3
 gkyl_vec3_abs(struct gkyl_vec3 a)
 {
   return (struct gkyl_vec3) {
-    .x[0] = fabs(a.x[0]),
-    .x[1] = fabs(a.x[1]),
-    .x[2] = fabs(a.x[2]) 
+    .x = { fabs(a.x[0]), fabs(a.x[1]), fabs(a.x[2]) }
   };
 }
 
